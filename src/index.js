@@ -1,5 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
+const sharp = require('sharp');
 const https = require('https');
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
@@ -76,14 +77,23 @@ const getImage = async (cookie, img) => {
     return (image);
 }
 
-const getTimetable = async () => {
-    const cookie = await login();
-    const uuid = await getUUID(cookie, '1', '0', '0');
-    const image_id = await getImageId(cookie, uuid, 'P1', '1', '1', '20-10-2022');
-    const image = await getImage(cookie, image_id);
-    const data = image.replace(/^data:image\/\w+;base64,/, "");
-    const buf = Buffer.from(data, 'base64');
-    fs.writeFileSync('image.png', buf);
+const resizeImage = async (buffer, promo, group, date) => {
+    const name = promo + '_' + group + '_' + date;
+    if (fs.existsSync('generated/' + name + '.png')) return (name);
+    await sharp(buffer)
+        .resize(1060, 666)
+        .toFile('generated/' + name + '.png')
+    return (name);
 }
 
-getTimetable();
+const getTimetable = async (promo, group, date) => {
+    const cookie = await login();
+    const uuid = await getUUID(cookie, '1', '0', '0');
+    const image_id = await getImageId(cookie, uuid, promo, group, '1', date);
+    const image = await getImage(cookie, image_id);
+    const data = image.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(data, 'base64');
+    return (resizeImage(buffer, promo, group, date));
+}
+
+module.exports = { getTimetable };
