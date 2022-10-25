@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const app = express();
-const PORT = 5500;
+const PORT = 3000;
 const { getTimetable } = require('./index.js');
 
 app.use(cors());
