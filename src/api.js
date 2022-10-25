@@ -9,9 +9,11 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.listen(PORT, () => {
-    console.log(`API Launched on: http://localhost:${PORT}`)
-})
+const server = app.listen(PORT || 3000, function () {
+    let host = server.address().address
+    let port = server.address().port
+    console.log('App listening at http://%s:%s', host, port)
+};)
 
 app.get('/:promo/:group/:date', async (req, res) => {
     const imageName = await getTimetable(req.params.promo, req.params.group, req.params.date);
