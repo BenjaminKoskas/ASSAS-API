@@ -77,7 +77,8 @@ const getImage = async (cookie, img) => {
     return (image);
 }
 
-const saveImage = async (buffer, name, cropped) => {
+const saveImage = async (buffer, name, weekly, cropped) => {
+    if (weekly == '0') name += '_weekly';
     if (cropped == '1') {
         name += '_cropped';
         if (fs.existsSync('generated/' + name + '.png')) return (name);
@@ -92,15 +93,15 @@ const saveImage = async (buffer, name, cropped) => {
     return (name);
 }
 
-const getTimetable = async (promo, group, date, cropped) => {
+const getTimetable = async (promo, group, weekly, date, cropped) => {
     const cookie = await login();
     const uuid = await getUUID(cookie, '1', '0', '0');
-    const image_id = await getImageId(cookie, uuid, promo, group, '1', date);
+    const image_id = await getImageId(cookie, uuid, promo, group, weekly, date);
     const image = await getImage(cookie, image_id);
     const data = image.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(data, 'base64');
     const name = promo + '_' + group + '_' + date;
-    return (saveImage(buffer, name, cropped));
+    return (saveImage(buffer, name, weekly, cropped));
 }
 
 module.exports = { getTimetable };

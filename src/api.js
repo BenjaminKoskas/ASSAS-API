@@ -15,10 +15,11 @@ const server = app.listen(process.env.PORT || 3000, function () {
     console.log('App listening at http://%s:%s', host, port)
 });
 
-app.get('/:promo/:group/:date/:cropped', async (req, res) => {
+app.get('/:promo/:group/:weekly/:date/:cropped', async (req, res) => {
     const imageName = await getTimetable(
         req.params.promo,
         req.params.group,
+        req.params.weekly,
         req.params.date,
         req.params.cropped
     );
