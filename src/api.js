@@ -16,7 +16,7 @@ const server = app.listen(process.env.PORT || 3000, function () {
 });
 
 app.get('/:promo/:group/:weekly/:date/:cropped', async (req, res) => {
-    console.log(`[GET] Params: ${req.params}`);
+    console.log(`[GET] Params: ${JSON.stringify(req.params)}`);
     const imageName = await getTimetable(
         req.params.promo,
         req.params.group,
