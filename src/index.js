@@ -78,13 +78,14 @@ const getImage = async (cookie, img) => {
 }
 
 const saveImage = async (buffer, name, cropped) => {
-    if (fs.existsSync('generated/' + name + '.png')) return (name);
     if (cropped == '1') {
         name += '_cropped';
+        if (fs.existsSync('generated/' + name + '.png')) return (name);
         await sharp(buffer)
             .resize(1060, 666)
             .toFile('generated/' + name + '.png')
     } else {
+        if (fs.existsSync('generated/' + name + '.png')) return (name);
         await sharp(buffer)
             .toFile('generated/' + name + '.png')
     }
