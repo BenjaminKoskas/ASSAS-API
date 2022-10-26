@@ -77,12 +77,17 @@ const getImage = async (cookie, img) => {
     return (image);
 }
 
-const resizeImage = async (buffer, name) => {
-    name += '_cropped';
+const saveImage = async (buffer, name, cropped) => {
     if (fs.existsSync('generated/' + name + '.png')) return (name);
-    await sharp(buffer)
-        .resize(1060, 666)
-        .toFile('generated/' + name + '.png')
+    if (cropped == '1') {
+        name += '_cropped';
+        await sharp(buffer)
+            .resize(1060, 666)
+            .toFile('generated/' + name + '.png')
+    } else {
+        await sharp(buffer)
+            .toFile('generated/' + name + '.png')
+    }
     return (name);
 }
 
@@ -94,7 +99,7 @@ const getTimetable = async (promo, group, date, cropped) => {
     const data = image.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(data, 'base64');
     const name = promo + '_' + group + '_' + date;
-    return (cropped == '1' ? resizeImage(buffer, name) : name);
+    return (saveImage(buffer, name, cropped));
 }
 
 module.exports = { getTimetable };
