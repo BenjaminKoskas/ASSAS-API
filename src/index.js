@@ -93,7 +93,7 @@ const getTimetable = async (promo, group, date, cropped) => {
     const image = await getImage(cookie, image_id);
     const data = image.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(data, 'base64');
-    const name = const name = promo + '_' + group + '_' + date;
+    const name = promo + '_' + group + '_' + date;
     return (cropped == '1' ? resizeImage(buffer, name) : name);
 }
 
