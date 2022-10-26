@@ -15,7 +15,12 @@ const server = app.listen(process.env.PORT || 3000, function () {
     console.log('App listening at http://%s:%s', host, port)
 });
 
-app.get('/:promo/:group/:date', async (req, res) => {
-    const imageName = await getTimetable(req.params.promo, req.params.group, req.params.date);
+app.get('/:promo/:group/:date/:cropped', async (req, res) => {
+    const imageName = await getTimetable(
+        req.params.promo,
+        req.params.group,
+        req.params.date,
+        req.params.cropped
+    );
     return (res.sendFile('generated/' + imageName + '.png', { root: './' }))
 })

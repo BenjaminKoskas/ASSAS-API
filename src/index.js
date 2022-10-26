@@ -77,8 +77,8 @@ const getImage = async (cookie, img) => {
     return (image);
 }
 
-const resizeImage = async (buffer, promo, group, date) => {
-    const name = promo + '_' + group + '_' + date;
+const resizeImage = async (buffer, name) => {
+    name += '_cropped';
     if (fs.existsSync('generated/' + name + '.png')) return (name);
     await sharp(buffer)
         .resize(1060, 666)
@@ -86,14 +86,15 @@ const resizeImage = async (buffer, promo, group, date) => {
     return (name);
 }
 
-const getTimetable = async (promo, group, date) => {
+const getTimetable = async (promo, group, date, cropped) => {
     const cookie = await login();
     const uuid = await getUUID(cookie, '1', '0', '0');
     const image_id = await getImageId(cookie, uuid, promo, group, '1', date);
     const image = await getImage(cookie, image_id);
     const data = image.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(data, 'base64');
-    return (resizeImage(buffer, promo, group, date));
+    const name = const name = promo + '_' + group + '_' + date;
+    return (cropped == '1' ? resizeImage(buffer, name) : name);
 }
 
 module.exports = { getTimetable };
