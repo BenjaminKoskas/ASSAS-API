@@ -77,18 +77,14 @@ const getImage = async (cookie, img) => {
     return (image);
 }
 
-const saveImage = async (buffer, name, weekly, cropped) => {
-    if (weekly == '0') name += '_weekly';
+const saveImage = async (buffer, name, cropped) => {
     if (cropped == '1') {
-        name += '_cropped';
-        if (fs.existsSync('generated/' + name + '.png')) return (name);
         await sharp(buffer)
             .resize(1060, 666)
-            .toFile('generated/' + name + '.png')
+            .toFile(name + '.png')
     } else {
-        if (fs.existsSync('generated/' + name + '.png')) return (name);
         await sharp(buffer)
-            .toFile('generated/' + name + '.png')
+            .toFile(name + '.png')
     }
     return (name);
 }
@@ -100,8 +96,8 @@ const getTimetable = async (promo, group, weekly, date, cropped) => {
     const image = await getImage(cookie, image_id);
     const data = image.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(data, 'base64');
-    const name = promo + '_' + group + '_' + date;
-    return (saveImage(buffer, name, weekly, cropped));
+    const name = Date.now();
+    return (saveImage(buffer, name, cropped));
 }
 
 module.exports = { getTimetable };

@@ -24,5 +24,8 @@ app.get('/:promo/:group/:weekly/:date/:cropped', async (req, res) => {
         req.params.date,
         req.params.cropped
     );
-    return (res.sendFile('generated/' + imageName + '.png', { root: './' }))
+    res.sendFile(imageName + '.png', { root: './' }, function(err) {
+        if (err) console.log(err);
+        fs.unlinkSync(imageName + '.png');
+    })
 })
