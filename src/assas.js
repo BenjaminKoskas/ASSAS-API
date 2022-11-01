@@ -11,8 +11,6 @@ const login = async () => {
     while (1) {
         const response = await axios.get('https://assas.podogest.com/agenda_XHR_appel_connexion/?login=agenda&password=assas&_=1666260337098', { httpsAgent });
         cookie = response.headers['set-cookie'][0].split(';')[0].split('=')[1];
-        const image = await getTimetable('P1', '1', '1', '26-01-2023', '0');
-        fs.unlinkSync(image + '.png');
         console.log(`New cookie: ${cookie}`);
         await delay(600 * 1000);
     }
