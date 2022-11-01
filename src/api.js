@@ -3,7 +3,7 @@ const cors = require('cors');
 const fs = require('fs');
 const app = express();
 const PORT = 3000;
-const { getTimetable } = require('./index.js');
+const { login, getTimetable } = require('./assas.js');
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -14,6 +14,8 @@ const server = app.listen(process.env.PORT || 3000, function () {
     let port = server.address().port
     console.log('App listening at http://%s:%s', host, port)
 });
+
+login();
 
 app.get('/:promo/:group/:weekly/:date/:cropped', async (req, res) => {
     console.log(`[GET] Params: ${JSON.stringify(req.params)}`);

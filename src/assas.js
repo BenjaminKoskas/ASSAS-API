@@ -3,15 +3,22 @@ const fs = require('fs');
 const sharp = require('sharp');
 const https = require('https');
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+const { delay } = require('./utils.js')
+
+let cookie = null;
 
 const login = async () => {
-    const response = await axios.get('https://assas.podogest.com/agenda_XHR_appel_connexion/?login=agenda&password=assas&_=1666260337098', { httpsAgent });
-    const cookie = response.headers['set-cookie'][0].split(';')[0].split('=')[1];
-    return (cookie);
+    while (1) {
+        const response = await axios.get('https://assas.podogest.com/agenda_XHR_appel_connexion/?login=agenda&password=assas&_=1666260337098', { httpsAgent });
+        cookie = response.headers['set-cookie'][0].split(';')[0].split('=')[1];
+        console.log(`New cookie: ${cookie}`);
+        await delay(600 * 1000);
+    }
 }
 
 const getUUID = async (cookie, promo, group, day) => {
-    const url = `https://assas.podogest.com/Web_XHR_get_uuid/?classe=${promo}&groupe=${group}&jour=${day}&_=1666262846765`;
+    const date = Date.now()
+    const url = `https://assas.podogest.com/Web_XHR_get_uuid/?classe=${promo}&groupe=${group}&jour=${day}&_=${date}`;
     const response = await axios.get(url, { 
         httpsAgent,
         headers: {
@@ -33,7 +40,8 @@ const getUUID = async (cookie, promo, group, day) => {
 }
 
 const getImageId = async (cookie, uuid, promo, group, weekly, currentDate) => {
-    const url = `https://assas.podogest.com/Web_XHR_get_agenda/?uuid=${uuid}&classe=${promo}&groupe=${group}&modehebdo=${weekly}&currentdate=${currentDate}&_=1666258827882`;
+    const date = Date.now()
+    const url = `https://assas.podogest.com/Web_XHR_get_agenda/?uuid=${uuid}&classe=${promo}&groupe=${group}&modehebdo=${weekly}&currentdate=${currentDate}&_=${date}`;
     const response = await axios.get(url, { 
         httpsAgent,
         headers: {
@@ -90,7 +98,6 @@ const saveImage = async (buffer, name, cropped) => {
 }
 
 const getTimetable = async (promo, group, weekly, date, cropped) => {
-    const cookie = await login();
     const uuid = await getUUID(cookie, '1', '0', '0');
     const image_id = await getImageId(cookie, uuid, promo, group, weekly, date);
     const image = await getImage(cookie, image_id);
@@ -100,4 +107,4 @@ const getTimetable = async (promo, group, weekly, date, cropped) => {
     return (saveImage(buffer, name, cropped));
 }
 
-module.exports = { getTimetable };
+module.exports = { login, getTimetable };
